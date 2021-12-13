@@ -1,4 +1,3 @@
-import time
 from web3 import Web3
 from . import contractapi
 from rest_framework.decorators import api_view
@@ -9,7 +8,6 @@ from rest_framework.response import Response
 
 @api_view(['POST'])
 def whitelistAddress(request, address):
-    time.sleep(4)
     try:
         if Web3.isAddress(address):
             contractapi.setPermissions(address)

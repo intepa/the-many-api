@@ -1,12 +1,31 @@
 import json
+import os
 from web3 import Web3
 from pathlib import Path
 from configobj import ConfigObj
-w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
+from web3.middleware import geth_poa_middleware
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+if os.environ.get("PROJECT_ENV") == "PRODUCTION":
+    appID = os.environ.get("INFURA_APP_ID")
+    owner = os.environ.get("OWNER_ADDRESS")
+    private_key = os.environ.get("OWNER_PRIVATE_KEY")
+    contract_address = os.environ.get("REGULATOR_SERVICE_CONTRACT_ADDRESS")
+
+else:
+    config = ConfigObj(f'{BASE_DIR}/settings.conf')
+    appID = config['INFURA_APP_ID']
+    owner = config['OWNER_ADDRESS']
+    private_key = config['OWNER_PRIVATE_KEY']
+    contract_address = config['REGULATOR_SERVICE_CONTRACT_ADDRESS']
+
+
+w3 = Web3(Web3.HTTPProvider(
+    f"https://polygon-mumbai.infura.io/v3/{appID}"))
+w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
 RegulatorServiceContract = f'{BASE_DIR}/contracts/RegulatorService.json'
-config = ConfigObj(f'{BASE_DIR}/settings.conf')
 
 with open(RegulatorServiceContract, 'r') as f:
     truffleFile = json.load(f)
@@ -14,9 +33,11 @@ with open(RegulatorServiceContract, 'r') as f:
 ABI = truffleFile['abi']
 
 regServiceContract = w3.eth.contract(
-    address=config['REGULATOR_SERVICE_CONTRACT_ADDRESS'], abi=ABI)
+    address=contract_address, abi=ABI)
 
 
 def setPermissions(address, send=True, receive=True):
-    return regServiceContract.functions.setPermissions(
-        address, send, receive).transact({'from': w3.eth.accounts[0]})
+    trans = regServiceContract.functions.setPermissions(address, send, receive).buildTransaction(
+        {'gas': 70000, 'gasPrice': w3.toWei('1', 'gwei'), 'nonce': w3.eth.getTransactionCount(owner), 'from': owner})
+    signed_txn = w3.eth.account.signTransaction(trans, private_key=private_key)
+    return w3.eth.sendRawTransaction(signed_txn.rawTransaction)

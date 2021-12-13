@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +21,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%jf%7cbbagg84erqmwa-4+3nzmxj9f8@_52nwz2dtiyh(2ax^3'
+if os.environ.get("PROJECT_ENV") == "PRODUCTION":
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+else:
+    SECRET_KEY = 'django-insecure-%jf%7cbbagg84erqmwa-4+3nzmxj9f8@_52nwz2dtiyh(2ax^3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', ]
+ALLOWED_HOSTS = ['the-many-blockchain.dk', ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://the-many-blockchain.dk",
+    "https://www.the-many-blockchain.dk"
 ]
-
 
 # Application definition
 
@@ -77,6 +81,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'base.wsgi.application'
+
+DEBUG = False
+
+if os.environ.get("PROJECT_ENV") == "DEVELOPMENT":
+
+    DEBUG = True
+
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
+
+    CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Database
