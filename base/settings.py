@@ -29,7 +29,7 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['the-many-blockchain.dk', ]
+ALLOWED_HOSTS = ['the-many-blockchain.dk', "the-many-api.herokuapp.com", ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://the-many-blockchain.dk",
