@@ -82,7 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'base.wsgi.application'
 
-DEBUG = False
+DEBUG = True
 
 if os.environ.get("PROJECT_ENV") == "DEVELOPMENT":
 
