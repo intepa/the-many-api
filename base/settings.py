@@ -27,7 +27,7 @@ else:
     SECRET_KEY = 'django-insecure-%jf%7cbbagg84erqmwa-4+3nzmxj9f8@_52nwz2dtiyh(2ax^3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['the-many-blockchain.dk', "the-many-api.herokuapp.com", ]
 
@@ -81,8 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'base.wsgi.application'
-
-DEBUG = True
 
 if os.environ.get("PROJECT_ENV") == "DEVELOPMENT":
 

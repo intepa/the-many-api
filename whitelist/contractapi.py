@@ -38,6 +38,6 @@ regServiceContract = w3.eth.contract(
 
 def setPermissions(address, send=True, receive=True):
     trans = regServiceContract.functions.setPermissions(address, send, receive).buildTransaction(
-        {'gas': 70000, 'gasPrice': w3.toWei('1', 'gwei'), 'nonce': w3.eth.getTransactionCount(owner), 'from': owner})
+        {'gas': 70000, 'gasPrice': w3.toWei('1.5', 'gwei'), 'nonce': w3.eth.getTransactionCount(owner), 'from': owner})
     signed_txn = w3.eth.account.signTransaction(trans, private_key=private_key)
     return w3.eth.sendRawTransaction(signed_txn.rawTransaction)
